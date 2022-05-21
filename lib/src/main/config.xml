@@ -1,0 +1,110 @@
+<queries>
+    <!-- SELECT ONE QUERY-->
+    <sql id="selectOne" paramType="selectOneClass">
+        <![CDATA[
+   SELECT  first_name,last_name,actor_id,last_update FROM actor WHERE actor_id=${propZ} AND first_name=${propY};
+      ]]>
+    </sql>
+
+
+    <!-- INSERT QUERY -->
+    <sql id="insertActor" paramType="selectOneClass">
+        <![CDATA[INSERT INTO actor VALUES (${insertID}, ${insertName}, ${deleteLastName}, SYSDATE());]]>
+    </sql>
+    <sql id="selectAfterInsert" paramType="selectOneClass">
+        <![CDATA[
+   SELECT  first_name,last_name,actor_id,last_update FROM actor WHERE actor_id=${insertID} AND first_name=${insertName};
+      ]]>
+    </sql>
+
+
+    <!-- SELECT MANY QUERY -->
+    <sql id="manyselect" paramType="selectOneClass">
+        <![CDATA[
+     SELECT actor_id, first_name, last_name, last_update FROM actor WHERE first_name=${propY};
+        ]]>
+    </sql>
+
+
+    <!-- UPDATE QUERY -->
+    <sql id="updateone" paramType="selectOneClass">
+        <![CDATA[
+     UPDATE actor SET first_name="JULIE" where actor_id=${propA};
+        ]]>
+    </sql>
+    <sql id="selectAfterUpdate" paramType="String">
+        <![CDATA[
+     Select actor_id,first_name,last_name,last_update from actor where actor_id=${propA};
+        ]]>
+    </sql>
+
+
+    <!-- DELETE QUERY -->
+    <sql id="insertBeforeDelete" paramType="selectOneClass">
+        <![CDATA[INSERT INTO actor VALUES (${deleteID}, ${deleteName}, ${deleteLastName}, SYSDATE());]]>
+    </sql>
+    <sql id="deleteone" paramType="int[]">
+        <![CDATA[
+     DELETE FROM actor WHERE actor_id in ${deleteID};
+        ]]>
+    </sql>
+    <sql id="noSuchRowDelete" paramType="selectOneClass">
+        <![CDATA[
+     DELETE FROM actor WHERE actor_id = 1000;
+        ]]>
+    </sql>
+    <sql id="selectAfterDelete" paramType="selectOneClass">
+        <![CDATA[
+     Select actor_id,first_name,last_name,last_update from actor where actor_id=${deleteID};
+        ]]>
+    </sql>
+
+
+    <!-- WRONG -->
+    <sql id="wrong" paramType="selectOneClass">
+        <![CDATA[
+     Select actor_id,first_name,last_name,last_update where actor_id=${deleteID};
+        ]]>
+    </sql>
+    <sql id="wrongParam" paramType="hello">
+        <![CDATA[
+     Select actor_id,first_name,last_name,last_update where actor_id=${deleteID};
+        ]]>
+    </sql>
+
+    <sql id="bigone" paramType="selectOneClass">
+        <![CDATA[
+     SELECT
+
+    `sakila`.`film`.`film_id` AS `FID`,
+    `sakila`.`film`.`title` AS `title`,
+    `sakila`.`film`.`description` AS `description`,
+    `sakila`.`category`.`name` AS `category`,
+    `sakila`.`film`.`rental_rate` AS `price`,
+    `sakila`.`film`.`length` AS `length`,
+    `sakila`.`film`.`rating` AS `rating`,
+    GROUP_CONCAT(CONCAT(CONCAT(UPPER(SUBSTR(`sakila`.`actor`.`first_name`,
+                                    1,
+                                    1)),
+                        LOWER(SUBSTR(`sakila`.`actor`.`first_name`,
+                                    2,
+                                    LENGTH(`sakila`.`actor`.`first_name`))),
+                        _utf8mb4 ' ',
+                        CONCAT(UPPER(SUBSTR(`sakila`.`actor`.`last_name`,
+                                            1,
+                                            1)),
+                                LOWER(SUBSTR(`sakila`.`actor`.`last_name`,
+                                            2,
+                                            LENGTH(`sakila`.`actor`.`last_name`))))))
+        SEPARATOR ', ') AS `actors`
+FROM
+    ((((`sakila`.`category`
+    LEFT JOIN `sakila`.`film_category` ON ((`sakila`.`category`.`category_id` = `sakila`.`film_category`.`category_id`)))
+    LEFT JOIN `sakila`.`film` ON ((`sakila`.`film_category`.`film_id` = `sakila`.`film`.`film_id`)))
+    JOIN `sakila`.`film_actor` ON ((`sakila`.`film`.`film_id` = `sakila`.`film_actor`.`film_id`)))
+    JOIN `sakila`.`actor` ON ((`sakila`.`film_actor`.`actor_id` = `sakila`.`actor`.`actor_id`)))
+GROUP BY `sakila`.`film`.`film_id` , `sakila`.`category`.`name`
+HAVING `sakila`.`film`.`rating` IN ('G', 'PG')
+        ]]>
+    </sql>
+</queries>
